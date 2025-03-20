@@ -1,5 +1,6 @@
 package com.example.aitest
 
+import PaymentMethodScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
 fun EventApp() {
     MaterialTheme(
         colorScheme = darkColorScheme(
-            primary = Color(0xFFBB86FC),
+            primary = Color(0xFF497D74),
             background = Color(0xFF121212),
             surface = Color(0xFF1E1E1E),
             onPrimary = Color.White,
@@ -51,7 +52,7 @@ fun EventApp() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("🎫 Event Ticketing", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+                    title = { Text("GoVent 🎫", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Black,
                         titleContentColor = Color.White

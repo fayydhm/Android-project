@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -62,12 +63,15 @@ fun EventDetailScreen(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
+            // Background Image
             Image(
                 painter = painterResource(id = R.drawable.lix),
                 contentDescription = "Event Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+
+            // Gradient Overlay
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -79,6 +83,7 @@ fun EventDetailScreen(
                     )
             )
 
+            // Content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -86,14 +91,21 @@ fun EventDetailScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Card(
+                // Fixed: Properly layered blur effect with background
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(Color.White.copy(alpha = 0.2f))
-                        .blur(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.Transparent)
                 ) {
+                    // Semi-transparent background
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(Color.White.copy(alpha = 0.15f))
+                            .blur(8.dp)
+                    )
+
+                    // Content on top of the blur
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(text = eventTitle, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Spacer(modifier = Modifier.height(8.dp))
@@ -105,13 +117,21 @@ fun EventDetailScreen(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Button(
                                 onClick = { showBottomSheet = true },
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFBB86FC), contentColor = Color.White),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFBB86FC),
+                                    contentColor = Color.White
+                                ),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Text(text = "Buy Ticket", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(
+                                    text = "Buy Ticket",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
                         }
                     }
                 }
@@ -125,7 +145,10 @@ fun EventDetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text("Choose from available categories and secure your seat!")
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { /* Purchase logic */ showBottomSheet = false }) {
+                    Button(
+                        onClick = { /* Purchase logic */ showBottomSheet = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         Text("Proceed to Payment")
                     }
                 }
@@ -136,6 +159,6 @@ fun EventDetailScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewEventDetailScreen(){
+fun PreviewEventDetailScreen() {
     EventDetailScreen()
 }

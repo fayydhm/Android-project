@@ -19,11 +19,9 @@
             android:theme="@style/Theme.AiTest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=""
+        <!-- You don't actually need separate activities since you're using Compose navigation -->
     </application>
-
 </manifest>
