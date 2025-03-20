@@ -8,9 +8,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -30,7 +28,8 @@ fun EventDetailScreen(
     eventDescription: String = "🏈 Super Bowl LIX – The Ultimate Showdown Awaits! 🔥",
     eventDate: String = "12 February 2025",
     eventLocation: String = "New Orleans Stadium",
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onBuyTicket: () -> Unit
 ) {
     var isSaved by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -160,5 +159,5 @@ fun EventDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventDetailScreen() {
-    EventDetailScreen()
+    EventDetailScreen { navController.navigate("payment_screen") }
 }

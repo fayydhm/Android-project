@@ -1,6 +1,5 @@
 package com.example.aitest
 
-import PaymentMethodScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,14 +30,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EventApp()
+            EventApp({ title, date, location, description ->
+                // Navigate to event detail with simplified parameters
+                navController.navigate("event_detail_screen/$title/$date/$location")
+            })
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventApp() {
+fun EventApp(onEventClick: Function<Unit>) {
     MaterialTheme(
         colorScheme = darkColorScheme(
             primary = Color(0xFF497D74),
@@ -137,7 +139,7 @@ fun TagSection() {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        listOf("🎵 Concert", "🏀 Sports", "📢 Seminar", "🤝 Meetup").forEach { tag ->
+        listOf("🎵 Concert", "🏀 Sports", "📢 Class", "🤝 Meetup").forEach { tag ->
             AssistChip(
                 onClick = { /* TODO */ },
                 label = { Text(tag) },
@@ -210,5 +212,8 @@ fun EventCard(eventName: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventApp(){
-    EventApp()
+    EventApp({ title, date, location, description ->
+        // Navigate to event detail with simplified parameters
+        navController.navigate("event_detail_screen/$title/$date/$location")
+    })
 }
