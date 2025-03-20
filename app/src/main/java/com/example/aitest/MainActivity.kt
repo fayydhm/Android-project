@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,22 +26,21 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EventApp({ title, date, location, description ->
-                // Navigate to event detail with simplified parameters
-                navController.navigate("event_detail_screen/$title/$date/$location")
-            })
+            AppNavigation()
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventApp(onEventClick: Function<Unit>) {
+fun EventApp(onEventClick: (String, String, String, String) -> Unit) {
     MaterialTheme(
         colorScheme = darkColorScheme(
             primary = Color(0xFF497D74),
@@ -75,11 +75,11 @@ fun EventApp(onEventClick: Function<Unit>) {
             ) {
                 SearchBar()
                 Spacer(modifier = Modifier.height(20.dp))
-                FeaturedEvent()
+                FeaturedEvent(onEventClick)
                 Spacer(modifier = Modifier.height(20.dp))
                 TagSection()
                 Spacer(modifier = Modifier.height(20.dp))
-                EventGrid()
+                EventGrid(onEventClick)
             }
         }
     }
@@ -105,11 +105,19 @@ fun SearchBar() {
 }
 
 @Composable
-fun FeaturedEvent() {
+fun FeaturedEvent(onEventClick: (String, String, String, String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(RoundedCornerShape(16.dp))
+            .clickable {
+                onEventClick(
+                    "Super Bowl LIX",
+                    "12 February 2025",
+                    "New Orleans Stadium",
+                    "🏈 Super Bowl LIX – The Ultimate Showdown Awaits! 🔥"
+                )
+            },
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
@@ -127,6 +135,8 @@ fun FeaturedEvent() {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("🔥 Featured Event", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
                 Spacer(modifier = Modifier.height(8.dp))
+                Text("Super Bowl LIX", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
+                Spacer(modifier = Modifier.height(4.dp))
                 Text("Don't miss the upcoming event!", color = Color.White.copy(alpha = 0.8f))
             }
         }
@@ -153,35 +163,73 @@ fun TagSection() {
 }
 
 @Composable
-fun EventGrid() {
+fun EventGrid(onEventClick: (String, String, String, String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        repeat(2) { row ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                repeat(2) {
-                    EventCard(eventName = "Event ${row * 2 + it + 1}")
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            EventCard(
+                eventName = "Concert in LA",
+                date = "15 April 2025",
+                location = "Los Angeles Arena",
+                description = "Join us for an unforgettable night of music!",
+                onEventClick = onEventClick
+            )
+            EventCard(
+                eventName = "Tech Conference",
+                date = "10 May 2025",
+                location = "San Francisco Center",
+                description = "The biggest tech event of the year with leading experts",
+                onEventClick = onEventClick
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            EventCard(
+                eventName = "Food Festival",
+                date = "20 June 2025",
+                location = "Central Park",
+                description = "Taste cuisines from around the world",
+                onEventClick = onEventClick
+            )
+            EventCard(
+                eventName = "Art Exhibition",
+                date = "5 July 2025",
+                location = "Modern Art Museum",
+                description = "Featuring works from renowned contemporary artists",
+                onEventClick = onEventClick
+            )
         }
     }
 }
 
 @Composable
-fun EventCard(eventName: String) {
+fun EventCard(
+    eventName: String,
+    date: String,
+    location: String,
+    description: String,
+    onEventClick: (String, String, String, String) -> Unit
+) {
     Card(
         modifier = Modifier
-            .size(170.dp)
+            .width(170.dp)
+            .height(180.dp)
             .shadow(10.dp, shape = RoundedCornerShape(12.dp))
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                onEventClick(eventName, date, location, description)
+            },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(12.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -193,17 +241,31 @@ fun EventCard(eventName: String) {
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(eventName, fontWeight = FontWeight.Bold, color = Color.White, fontSize = 16.sp)
+            Text(
+                eventName,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 14.sp,
+                maxLines = 1
+            )
+            Text(
+                date,
+                color = Color.White.copy(0.7f),
+                fontSize = 12.sp,
+                maxLines = 1
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Button(
-                onClick = { /* Buy Ticket */ },
+                onClick = {
+                    onEventClick(eventName, date, location, description)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFBB86FC),
                     contentColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Buy Ticket")
+                Text("View", fontSize = 12.sp)
             }
         }
     }
@@ -211,9 +273,6 @@ fun EventCard(eventName: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewEventApp(){
-    EventApp({ title, date, location, description ->
-        // Navigate to event detail with simplified parameters
-        navController.navigate("event_detail_screen/$title/$date/$location")
-    })
+fun PreviewEventApp() {
+    EventApp { _, _, _, _ -> }
 }

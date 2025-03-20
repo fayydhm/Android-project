@@ -1,3 +1,5 @@
+package com.example.aitest
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.aitest.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +30,7 @@ fun EventDetailScreen(
     eventDate: String = "12 February 2025",
     eventLocation: String = "New Orleans Stadium",
     onBackClick: () -> Unit = {},
-    onBuyTicket: () -> Unit
+    onBuyTicket: () -> Unit = {}
 ) {
     var isSaved by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -115,7 +116,9 @@ fun EventDetailScreen(
 
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Button(
-                                onClick = { showBottomSheet = true },
+                                onClick = {
+                                    showBottomSheet = true
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(50.dp),
@@ -145,7 +148,10 @@ fun EventDetailScreen(
                     Text("Choose from available categories and secure your seat!")
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = { /* Purchase logic */ showBottomSheet = false },
+                        onClick = {
+                            showBottomSheet = false
+                            onBuyTicket()
+                        },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Proceed to Payment")
@@ -159,5 +165,5 @@ fun EventDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewEventDetailScreen() {
-    EventDetailScreen { navController.navigate("payment_screen") }
+    EventDetailScreen()
 }

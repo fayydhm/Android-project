@@ -1,3 +1,5 @@
+package com.example.aitest
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -26,7 +28,10 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentMethodScreen(onBackClick: () -> Unit = {}) {
+fun PaymentMethodScreen(
+    onBackClick: () -> Unit = {},
+    onPaymentConfirmed: () -> Unit = {}
+) {
     var selectedPayment by remember { mutableStateOf("") }
 
     // Structured payment method data
@@ -118,7 +123,7 @@ fun PaymentMethodScreen(onBackClick: () -> Unit = {}) {
 
             // Fixed button at the bottom
             Button(
-                onClick = { /* Proceed with Payment */ },
+                onClick = { onPaymentConfirmed() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
